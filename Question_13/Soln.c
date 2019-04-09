@@ -6,17 +6,18 @@
 char* InputFile = "Input_1.txt";
 
 int readinput(int Line_no ,int Word_no);
-void *barber_work(void *Customer);
+void *barber_work();
 
 int barber_Free = 0;
+int Ocupied_chairs =0;
+int *wating_qu;
+int lock = 0;
 
 struct Cust{
     int customer_no;
     int arival_time;
-    int seat_no;
-    int Finshed ;
 };
-struct Cust* St_Pointer;
+struct Cust* St_pointer;
 
 int main(){
 
@@ -25,60 +26,82 @@ int no_of_chairs =readinput(1,0);
 int no_of_customers = readinput(1,1);
 int Time = 0;
 
-int chairs[no_of_chairs];
-int Ocupied_chairs =0;
+int Wating_queue[no_of_customers];
+int enque_pointer=0;
+wating_qu = Wating_queue;
 
 struct Cust Customer[no_of_customers];
-St_Pointer = Customer;
 
-for (int i=0; i<no_of_chairs;i++) chairs[i]=-1;
+for (int i=0; i<no_of_customers;i++) Wating_queue[i]=-1;
 
 for (int i=0 ; i<no_of_customers;i++){
     Customer[i].customer_no = readinput(i+2,1);
     Customer[i].arival_time = readinput(i+2,3);
-    Customer[i].seat_no =-1;
-    Customer[i].Finshed = 0;
 }
+
+St_pointer = Customer;
+
+pthread_t thread;
+pthread_create(&thread,NULL,&barber_work,NULL);
+
+
 
 while (no_of_customers>customer_Finshed && Time<1000){
     for (int i=0 ;i <no_of_customers;i++){
        
-        if(Customer[i].Finshed == 0 & Customer[i].arival_time == Time){
-            
-            if (barber_Free == 0){
-                pthread_t t1;
-                pthread_create(&t1,NULL,&barber_work,&Customer[i].customer_no);
-                Customer[i].seat_no=-1;
-                Customer[i].Finshed =1;
+        if(Customer[i].arival_time == Time){
+            if (Ocupied_chairs < no_of_chairs){
+                Wating_queue[enque_pointer] = i;
+                customer_Finshed++;
+                Ocupied_chairs++;
+                enque_pointer++;
+                printf("Customer Enter %d \n ",Customer[i].customer_no);
+                printf("ROCO :- %d\n ",Ocupied_chairs);
+            }
+            else {
+                printf("Customer leave \n ");
                 customer_Finshed++;
             }
-            else{
-                int empty_chair=-1;
-                for (int j=0; j<no_of_chairs;j++) if (chairs[j] == -1) empty_chair =j;
-                if (empty_chair !=-1) {
-                Customer[i].seat_no=i+1;
-                chairs[i]=Customer[i].customer_no; 
-                }
-                else {
-                    printf("Customer_leaves \n");
-                    Customer[i].Finshed =1;
-                    customer_Finshed++;
-                }
-            }
         }
-        
-    }
+        }
+    sleep(1); 
     Time++;
-    printf("Check Time %d \n",Time);
 }
- printf("Check point lasts \n");
-
+while(1){
+    int temp = 0;
+    for (int i=0; i<no_of_customers;i++) if( Wating_queue[i]!=-1) temp++;
+    if(!temp) break;
+}
+lock = 1;
+pthread_join(thread,NULL);
 return 0;
 }
 
-void *barber_work(void *Customer){
-int * c_id= Customer;
-printf("Customer_id %d \n",c_id);
+void *barber_work(){
+printf("Started at time %d\n",0);
+int barber_sleeping =0; 
+int deque_pointer=0;
+while(!lock){
+    
+if (wating_qu[deque_pointer] != -1){
+    barber_sleeping=0;
+    
+    sleep(4);
+    printf("%d\n",St_pointer[wating_qu[deque_pointer]].customer_no);
+    wating_qu[deque_pointer] =-1;
+    deque_pointer++;
+    Ocupied_chairs--;
+    printf("%d WQ\n",deque_pointer);
+}
+else
+{
+    if(!barber_sleeping){
+    printf("barber started sleeping \n");
+    barber_sleeping = 1;
+    }
+}
+}
+printf("End \n");
 }
 
 int readinput(int Line_no,int Word_no){

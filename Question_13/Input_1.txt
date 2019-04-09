@@ -1,4 +1,4 @@
-5 12 
+4 12 
 Customer 1 = 2 
 Customer 2 = 3 
 Customer 3 = 7 
