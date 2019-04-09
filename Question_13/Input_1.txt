@@ -1,0 +1,13 @@
+5 12 
+Customer 1 = 2 
+Customer 2 = 3 
+Customer 3 = 7 
+Customer 4 = 8 
+Customer 5 = 9 
+Customer 6 = 17 
+Customer 7 = 18 
+Customer 8 = 20 
+Customer 9 = 24 
+Customer 10 = 27 
+Customer 11 = 28 
+Customer 12 = 29 
