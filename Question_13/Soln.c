@@ -55,11 +55,11 @@ while (no_of_customers>customer_Finshed && Time<1000){
                 customer_Finshed++;
                 Ocupied_chairs++;
                 enque_pointer++;
-                printf("Customer Enter %d \n ",Customer[i].customer_no);
-                printf("ROCO :- %d\n ",Ocupied_chairs);
+                printf("Customer %d Enter at shop at Time %d \n ",Customer[i].customer_no,Time);
+                printf("\n\nFree Seets :- %d\n ",no_of_chairs- Ocupied_chairs);
             }
             else {
-                printf("Customer leave \n ");
+                printf("Customer %d leave to chair is empty \n ",Customer[i].customer_no,Time);
                 customer_Finshed++;
             }
         }
@@ -78,30 +78,34 @@ return 0;
 }
 
 void *barber_work(){
-printf("Started at time %d\n",0);
+printf("barber Started work at time %d\n",0);
 int barber_sleeping =0; 
 int deque_pointer=0;
+int Timer =0;
 while(!lock){
     
 if (wating_qu[deque_pointer] != -1){
     barber_sleeping=0;
-    
+    Timer+=4;
     sleep(4);
-    printf("%d\n",St_pointer[wating_qu[deque_pointer]].customer_no);
     wating_qu[deque_pointer] =-1;
     deque_pointer++;
     Ocupied_chairs--;
-    printf("%d WQ\n",deque_pointer);
+    printf("\tCustomer %d Completed at Time :- %d\n",St_pointer[wating_qu[deque_pointer]].customer_no,Timer);
 }
 else
 {
     if(!barber_sleeping){
-    printf("barber started sleeping \n");
+    printf("Barber started sleeping \n");
     barber_sleeping = 1;
+    }
+    else{
+        Timer+=1;
+        sleep(1);
     }
 }
 }
-printf("End \n");
+printf("Barber completed his work at %d\n",Timer);
 }
 
 int readinput(int Line_no,int Word_no){
